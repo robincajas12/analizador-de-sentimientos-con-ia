@@ -7,6 +7,8 @@ import { AnalysisForm } from './analysis-form';
 import { ResultsDisplay } from './results-display';
 import { getPostFromUrl } from '@/app/actions';
 import { PostDisplay } from './post-display';
+import { Card, CardContent } from '@/components/ui/card';
+import { Bot } from 'lucide-react';
 
 export function MainContent() {
   const [result, setResult] = useState<AnalysisResult | { error: string } | null>(null);
@@ -18,6 +20,8 @@ export function MainContent() {
   const handleUrlSubmit = (url: string) => {
     setFetchError(null);
     setResult(null);
+    setPost(null);
+    setComments([]);
     startTransition(async () => {
       const postData = await getPostFromUrl(url);
       if ('error' in postData) {
@@ -56,11 +60,19 @@ export function MainContent() {
           {post ? (
             <PostDisplay post={post} comments={comments} />
           ) : (
-             <div className="grid grid-cols-1 gap-6 h-full">
-                <ResultsDisplay result={analysisResult} />
-            </div>
+            <Card className="flex flex-col items-center justify-center min-h-[400px] border-dashed">
+                <CardContent className="flex flex-col items-center justify-center text-center p-6">
+                <div className="p-4 bg-muted rounded-full mb-4">
+                    <Bot className="w-12 h-12 text-muted-foreground" />
+                </div>
+                <h3 className="text-xl font-semibold text-muted-foreground">Post Preview</h3>
+                <p className="text-muted-foreground mt-2 max-w-xs">
+                    Fetch a post to see its content and comments here.
+                </p>
+                </CardContent>
+            </Card>
           )}
-          {post && <ResultsDisplay result={analysisResult} />}
+          <ResultsDisplay result={analysisResult} />
         </div>
       </div>
     </main>
