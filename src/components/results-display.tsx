@@ -26,18 +26,18 @@ const sentimentColors = {
 
 const sentimentStyles = {
   Positive: {
-    bgColor: 'bg-green-100 dark:bg-green-900/50',
-    textColor: 'text-green-700 dark:text-green-400',
+    bgColor: 'bg-green-900/50',
+    textColor: 'text-green-400',
     borderColor: 'border-green-500/50',
   },
   Negative: {
-    bgColor: 'bg-red-100 dark:bg-red-900/50',
-    textColor: 'text-red-700 dark:text-red-400',
+    bgColor: 'bg-red-900/50',
+    textColor: 'text-red-400',
     borderColor: 'border-red-500/50',
   },
   Neutral: {
-    bgColor: 'bg-yellow-100 dark:bg-yellow-900/50',
-    textColor: 'text-yellow-700 dark:text-yellow-400',
+    bgColor: 'bg-yellow-900/50',
+    textColor: 'text-yellow-400',
     borderColor: 'border-yellow-500/50',
   },
 };
@@ -85,12 +85,12 @@ export function ResultsDisplay({ result }: { result: AnalysisResult | null }) {
       <CardContent className="space-y-6">
         <div className={`p-4 rounded-lg border ${currentStyle.bgColor} ${currentStyle.borderColor}`}>
           <div className="flex justify-between items-center">
-            <span className={`text-lg font-bold ${currentStyle.textColor}`}>
+            <span className={`text-xl font-bold ${currentStyle.textColor}`}>
               {sentiment}
             </span>
-            <span className={`text-2xl font-bold ${currentStyle.textColor}`}>
+            <span className={`text-3xl font-bold ${currentStyle.textColor}`}>
               {(confidence * 100).toFixed(0)}%
-              <span className="text-sm font-medium ml-1">Confidence</span>
+              <span className="text-base font-medium ml-1">Confidence</span>
             </span>
           </div>
         </div>
@@ -109,6 +109,7 @@ export function ResultsDisplay({ result }: { result: AnalysisResult | null }) {
                         nameKey="name"
                         innerRadius={60}
                         strokeWidth={5}
+                        stroke="hsl(var(--card))"
                     >
                     <Label
                       content={({ viewBox }) => {

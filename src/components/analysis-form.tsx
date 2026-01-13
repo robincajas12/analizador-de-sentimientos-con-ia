@@ -50,19 +50,19 @@ export function AnalysisForm({
   };
 
   return (
-    <Card className="h-full">
+    <Card className="h-full flex flex-col">
       <CardHeader>
         <CardTitle>Analyze Text</CardTitle>
         <CardDescription>
           Enter text manually or use a sample social media post.
         </CardDescription>
       </CardHeader>
-      <form ref={formRef} action={formAction} className="flex flex-col h-[calc(100%-76px)]">
-        <CardContent className="space-y-4 flex-grow">
+      <form ref={formRef} action={formAction} className="flex flex-col flex-grow">
+        <CardContent className="space-y-4 flex-grow flex flex-col">
           <Textarea
             name="text"
             placeholder="Paste your text here..."
-            className="min-h-[150px] resize-y h-full"
+            className="min-h-[150px] resize-y flex-grow"
             value={textValue}
             onChange={(e) => setTextValue(e.target.value)}
             required

@@ -14,7 +14,7 @@ export default function Home() {
         <ConfigPanel />
       </Sidebar>
       <SidebarInset>
-        <div className="flex flex-col h-screen">
+        <div className="flex flex-col max-h-screen">
           <Header />
           <MainContent />
         </div>
