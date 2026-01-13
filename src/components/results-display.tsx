@@ -26,19 +26,19 @@ const sentimentColors = {
 
 const sentimentStyles = {
   Positive: {
-    bgColor: 'bg-green-900/50',
+    bgColor: 'bg-green-500/10',
     textColor: 'text-green-400',
-    borderColor: 'border-green-500/50',
+    borderColor: 'border-green-500/20',
   },
   Negative: {
-    bgColor: 'bg-red-900/50',
+    bgColor: 'bg-red-500/10',
     textColor: 'text-red-400',
-    borderColor: 'border-red-500/50',
+    borderColor: 'border-red-500/20',
   },
   Neutral: {
-    bgColor: 'bg-yellow-900/50',
+    bgColor: 'bg-yellow-500/10',
     textColor: 'text-yellow-400',
-    borderColor: 'border-yellow-500/50',
+    borderColor: 'border-yellow-500/20',
   },
 };
 
