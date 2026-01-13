@@ -1,8 +1,8 @@
 'use client';
-import { useFormState, useFormStatus } from 'react-dom';
+import { useFormStatus } from 'react-dom';
 import { analyzeSentiment } from '@/app/actions';
 import type { AnalysisResult } from '@/app/types';
-import { useEffect, useRef, useState } from 'react';
+import { useActionState, useEffect, useRef, useState } from 'react';
 import {
   Card,
   CardContent,
@@ -37,7 +37,7 @@ export function AnalysisForm({
 }: {
   onAnalysisComplete: (result: AnalysisResult | { error: string } | null) => void;
 }) {
-  const [state, formAction] = useFormState(analyzeSentiment, null);
+  const [state, formAction] = useActionState(analyzeSentiment, null);
   const [textValue, setTextValue] = useState('');
   const formRef = useRef<HTMLFormElement>(null);
 
