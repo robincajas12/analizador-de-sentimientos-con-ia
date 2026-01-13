@@ -1,3 +1,4 @@
+
 'use client';
 import { useFormStatus } from 'react-dom';
 import { analyzeSentiment } from '@/app/actions';
@@ -13,76 +14,91 @@ import {
 } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { Facebook, Loader2, Twitter } from 'lucide-react';
-import { RedditIcon } from '@/components/icons';
-
-const samplePosts = {
-    twitter: "Just had the most amazing experience with @NextJSTemplates! Their new themes are 🔥 #webdev #nextjs",
-    facebook: "Feeling so grateful for my friends and family today. It's been a tough week, but their support means the world to me. ❤️",
-    reddit: "r/programming: I've been using this new framework for a project, and it's been a complete nightmare. The documentation is sparse, the community is unresponsive, and it's full of bugs. Would not recommend."
-};
+import { Loader2 } from 'lucide-react';
+import { Input } from '@/components/ui/input';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
     <Button type="submit" disabled={pending} className="w-full sm:w-auto">
       {pending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-      Analyze Text
+      Analyze
     </Button>
   );
 }
 
 export function AnalysisForm({
   onAnalysisComplete,
+  onUrlSubmit,
+  isFetchingPost,
+  fetchError,
+  initialText,
 }: {
   onAnalysisComplete: (result: AnalysisResult | { error: string } | null) => void;
+  onUrlSubmit: (url: string) => void;
+  isFetchingPost: boolean;
+  fetchError: string | null;
+  initialText: string;
 }) {
-  const [state, formAction] = useActionState(analyzeSentiment, null);
-  const [textValue, setTextValue] = useState('');
+  const [analysisState, analysisAction] = useActionState(analyzeSentiment, null);
+  const [url, setUrl] = useState('https://example.com/post/123');
   const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
-    onAnalysisComplete(state);
-  }, [state, onAnalysisComplete]);
-  
-  const handleSampleClick = (sampleText: string) => {
-    setTextValue(sampleText);
+    onAnalysisComplete(analysisState);
+  }, [analysisState, onAnalysisComplete]);
+
+  const handleUrlSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    onUrlSubmit(url);
   };
+
+  const textToAnalyze = initialText;
 
   return (
     <Card className="h-full flex flex-col">
       <CardHeader>
-        <CardTitle>Analyze Text</CardTitle>
+        <CardTitle>Analyze Post</CardTitle>
         <CardDescription>
-          Enter text manually or use a sample social media post.
+          Enter a URL to a social media post to fetch and analyze it.
         </CardDescription>
       </CardHeader>
-      <form ref={formRef} action={formAction} className="flex flex-col flex-grow">
-        <CardContent className="space-y-4 flex-grow flex flex-col">
-          <Textarea
-            name="text"
-            placeholder="Paste your text here..."
-            className="min-h-[150px] resize-y flex-grow"
-            value={textValue}
-            onChange={(e) => setTextValue(e.target.value)}
+      <CardContent className="space-y-4">
+        <form onSubmit={handleUrlSubmit} className="flex items-start gap-2">
+          <Input
+            name="url"
+            placeholder="https://..."
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
             required
+            className="flex-grow"
           />
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-sm font-medium">Simulate post from:</span>
-            <Button variant="outline" size="sm" type="button" onClick={() => handleSampleClick(samplePosts.twitter)}>
-              <Twitter className="mr-2 h-4 w-4 text-sky-500" /> Twitter
-            </Button>
-            <Button variant="outline" size="sm" type="button" onClick={() => handleSampleClick(samplePosts.facebook)}>
-              <Facebook className="mr-2 h-4 w-4 text-blue-600" /> Facebook
-            </Button>
-            <Button variant="outline" size="sm" type="button" onClick={() => handleSampleClick(samplePosts.reddit)}>
-              <RedditIcon className="mr-2 h-4 w-4 text-orange-500" /> Reddit
-            </Button>
+          <Button type="submit" variant="secondary" disabled={isFetchingPost}>
+            {isFetchingPost ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              'Fetch Post'
+            )}
+          </Button>
+        </form>
+        {(fetchError) && <p className="text-sm text-destructive">{fetchError}</p>}
+      </CardContent>
+
+      <form ref={formRef} action={analysisAction} className="flex flex-col flex-grow">
+        <CardContent className="space-y-4 flex-grow flex flex-col">
+          <input type="hidden" name="text" value={textToAnalyze} />
+          <div className="flex-grow rounded-md border bg-muted/50 p-3 text-sm text-muted-foreground min-h-[150px] overflow-auto">
+            <p className="font-semibold text-foreground mb-2">Text to be analyzed:</p>
+            {textToAnalyze ? (
+              <pre className="whitespace-pre-wrap font-sans">{textToAnalyze}</pre>
+            ) : (
+              <p>Fetch a post to see the content that will be analyzed.</p>
+            )}
           </div>
         </CardContent>
         <CardFooter className="flex-col sm:flex-row items-start sm:items-center gap-4">
           <SubmitButton />
-          {state?.error && <p className="text-sm text-destructive">{state.error}</p>}
+          {analysisState?.error && <p className="text-sm text-destructive">{analysisState.error}</p>}
         </CardFooter>
       </form>
     </Card>

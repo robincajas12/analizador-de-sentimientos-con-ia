@@ -1,7 +1,22 @@
 
 'use server';
 
-import type { AnalysisResult, Sentiment } from '@/app/types';
+import type { AnalysisResult, Sentiment, Post, Comment } from '@/app/types';
+import { samplePost } from '@/lib/sample-data';
+
+export async function getPostFromUrl(
+  url: string
+): Promise<{ post: Post; comments: Comment[] } | { error: string }> {
+  if (!url || !url.trim() || !url.startsWith('http')) {
+    return { error: 'Please enter a valid URL.' };
+  }
+  // Simulate network delay
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+
+  // In a real app, you would fetch and parse the URL here.
+  // For now, we'll return the sample post regardless of the URL.
+  return { post: samplePost.post, comments: samplePost.comments };
+}
 
 export async function analyzeSentiment(
   prevState: any,
