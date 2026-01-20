@@ -1,8 +1,8 @@
-
 'use server';
 
-import type { AnalysisResult, Sentiment, Post, Comment } from '@/app/types';
+import type { AnalysisResult, Post, Comment } from '@/app/types';
 import { samplePost } from '@/lib/sample-data';
+import { analyze as analyzeWithAi } from '@/ai/flows/sentiment-flow';
 
 export async function getPostFromUrl(
   url: string
@@ -28,34 +28,15 @@ export async function analyzeSentiment(
     return { error: 'Text input cannot be empty.' };
   }
 
-  // Simulate network delay and processing time
-  await new Promise((resolve) => setTimeout(resolve, 1500));
-
-  // Simulate a model prediction
-  const p1 = Math.random();
-  const p2 = Math.random();
-  const p3 = Math.random();
-  const total = p1 + p2 + p3;
-  const probs: Record<Sentiment, number> = {
-    Positive: p1 / total,
-    Negative: p2 / total,
-    Neutral: p3 / total,
-  };
-
-  const sentiment = Object.keys(probs).reduce((a, b) =>
-    probs[a as Sentiment] > probs[b as Sentiment] ? a : b
-  ) as Sentiment;
-  const confidence = probs[sentiment];
-
-  const probabilities = [
-    { name: 'Positive' as Sentiment, value: probs.Positive },
-    { name: 'Negative' as Sentiment, value: probs.Negative },
-    { name: 'Neutral' as Sentiment, value: probs.Neutral },
-  ];
-
-  return {
-    sentiment,
-    confidence: confidence,
-    probabilities,
-  };
+  try {
+    const result = await analyzeWithAi(text);
+    return result;
+  } catch (e: any) {
+    console.error(e);
+    // Check for specific Genkit/Google AI error messages if possible
+    const errorMessage = e.message?.includes('blocked')
+      ? 'The analysis was blocked due to safety settings. Please try again with different text.'
+      : 'Analysis failed. The AI model may be temporarily unavailable.';
+    return { error: errorMessage };
+  }
 }

@@ -1,14 +1,8 @@
+import type { Sentiment, SentimentOutput } from '@/ai/schema';
 
-export type Sentiment = 'Positive' | 'Negative' | 'Neutral';
+export type { Sentiment };
 
-export type AnalysisResult = {
-  sentiment: Sentiment;
-  confidence: number;
-  probabilities: {
-    name: Sentiment;
-    value: number;
-  }[];
-};
+export type AnalysisResult = SentimentOutput;
 
 export type User = {
   name: string;
