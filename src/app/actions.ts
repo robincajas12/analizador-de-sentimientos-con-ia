@@ -29,14 +29,28 @@ export async function analyzeSentiment(
   }
 
   try {
-    const result = await analyzeWithAi(text);
+    const response = await fetch('http://api:5001/predict', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ text }),
+    });
+
+    if (!response.ok) {
+      const errorBody = await response.json().catch(() => ({
+        error: `API request failed with status: ${response.status}`,
+      }));
+      throw new Error(errorBody.error || `API request failed`);
+    }
+
+    const result: AnalysisResult = await response.json();
     return result;
   } catch (e: any) {
     console.error(e);
-    // Check for specific Genkit/Google AI error messages if possible
-    const errorMessage = e.message?.includes('blocked')
-      ? 'The analysis was blocked due to safety settings. Please try again with different text.'
-      : 'Analysis failed. The AI model may be temporarily unavailable.';
+    const errorMessage = e.message?.includes('fetch')
+      ? 'Analysis failed. Could not connect to the model API. Are the Docker services running correctly? (docker-compose up)'
+      : `An error occurred: ${e.message}`;
     return { error: errorMessage };
   }
 }
