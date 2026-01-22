@@ -29,7 +29,7 @@ COPY --from=builder /app/package.json ./package.json
 
 # Exponer el puerto en el que se ejecuta la aplicación
 EXPOSE 9002
-
+EXPOSE 3000
 # Comando para iniciar la aplicación
 # Usamos "next start -p 9002" para asegurar el puerto
 CMD ["npm", "run", "start"]
